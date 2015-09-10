@@ -1,0 +1,6 @@
+/**
+ * @license ng-superlogin v<%= pkg.version %>
+ * (c) 2015 Colin Skow
+ * License: MIT
+ */
+(function(angular) {

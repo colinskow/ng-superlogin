@@ -1,0 +1,26 @@
+{
+  "name": "ng-superlogin",
+  "description": "Angular bindings for the SuperLogin project",
+  "version": "0.1.0",
+  "homepage": "http://github.com/colinskow/ng-superlogin",
+  "author": "Colin Skow",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/colinskow/ng-superlogin"
+  },
+  "keywords": [
+    "angular",
+    "angularjs",
+    "superlogin",
+    "single page app",
+    "spa",
+    "login",
+    "authentication"
+  ],
+  "dependencies": {
+    "angular": "^1.4.x"
+  },
+  "devDependencies": {
+    "angular-mocks": "^1.4.x"
+  }
+}

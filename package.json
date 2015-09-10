@@ -1,0 +1,47 @@
+{
+  "name": "ng-superlogin",
+  "version": "0.1.0",
+  "description": "Angular bindings for the SuperLogin project",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "author": "Colin Skow",
+  "license": "MIT",
+  "homepage": "https://github.com/colinskow/ng-superlogin",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/colinskow/ng-superlogin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/colinskow/ng-superlogin/issues"
+  },
+  "keywords": [
+    "angular",
+    "angularjs",
+    "superlogin",
+    "single page app",
+    "spa",
+    "login",
+    "authentication"
+  ],
+  "devDependencies": {
+    "del": "^2.0.1",
+    "gulp": "^3.5.6",
+    "gulp-copy": "0.0.2",
+    "gulp-footer": "^1.0.5",
+    "gulp-header": "^1.2.2",
+    "gulp-jshint": "^1.9.2",
+    "gulp-karma": "0.0.4",
+    "gulp-ng-annotate": "^0.5.2",
+    "gulp-rename": "^1.2.0",
+    "gulp-sourcemaps": "^1.5.0",
+    "gulp-uglify": "^0.1.0",
+    "jasmine-core": "^2.2.0",
+    "jshint-stylish": "^1.0.1",
+    "karma": "~0.12.31",
+    "karma-chrome-launcher": "~0.1.7",
+    "karma-firefox-launcher": "^0.1.4",
+    "karma-jasmine": "^0.3.5",
+    "karma-phantomjs-launcher": "~0.1.4"
+  }
+}
