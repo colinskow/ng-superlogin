@@ -6,7 +6,7 @@
   "author": "Colin Skow",
   "repository": {
     "type": "git",
-    "url": "git://github.com/colinskow/ng-superlogin"
+    "url": "git://github.com/colinskow/ng-superlogin-bower.git"
   },
   "keywords": [
     "angular",
