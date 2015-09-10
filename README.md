@@ -4,7 +4,7 @@
 
 AngularJS bindings to help you build a front-end for SuperLogin applications.
 
-For issues and feature requests visit the [issue tracker](https://github.com/colinskow/superlogin/issues).
+For issues and feature requests visit the [issue tracker](https://github.com/colinskow/ng-superlogin/issues).
 
 ## Features
 
@@ -174,5 +174,5 @@ Returns a promise that will resolve if the email is valid and not currently in u
 
 ## Releases
 
-##### Initial Release (0.1.0) 2015-09-07
+##### Initial Release (0.1.0) 2015-09-10
 SuperLogin dangerously melds its intense power with that of AngularJS!
