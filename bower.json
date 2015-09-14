@@ -1,13 +1,14 @@
 {
   "name": "ng-superlogin",
   "description": "Angular bindings for the SuperLogin project",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "homepage": "http://github.com/colinskow/ng-superlogin",
   "author": "Colin Skow",
   "repository": {
     "type": "git",
     "url": "git://github.com/colinskow/ng-superlogin-bower.git"
   },
+  "main": ["ng-superlogin.js"],
   "keywords": [
     "angular",
     "angularjs",

@@ -89,31 +89,31 @@ Broadcast when a provider has been linked to the account.
 ## API
 
 ##### `superlogin.authenticated()`
-Returns true if the user is currently authenticated; otherwise false. Synchronous.
+Returns true if the user is currently authenticated; otherwise false. (synchronous)
 
 ##### `superlogin.authenticate()`
 Returns a promise that is resolved as soon as the user has authenticated. If the user never authenticates, this promise will stay waiting forever.
 
 ##### `superlogin.getConfig()`
-Returns the config object
+Returns the config object. (synchronous)
 
 ##### `superlogin.getSession()`
-Returns the current session if the user is authenticated
+Returns the current session if the user is authenticated. (synchronous)
 
 ##### `superlogin.deleteSession()`
-Deletes the current session, but does not invalidate the token on the server or broadcast a logout event.
+Deletes the current session, but does not invalidate the token on the server or broadcast a logout event. (synchronous)
 
 ##### `superlogin.getDBUrl(dbName)`
-Returns the access url for the specified user database, or null if it is not found.
+Returns the access url for the specified user database, or null if it is not found. (synchronous)
 
 ##### `superlogin.confirmRole(role)`
-Returns true if the authenticated user possesses the specified `role` (string).
+Returns true if the authenticated user possesses the specified `role` (string). (synchronous)
 
 ##### `superlogin.confirmAnyRole(possibleRoles)`
-Returns true if the user possesses at least one of the specified `possibleRoles` (array).
+Returns true if the user possesses at least one of the specified `possibleRoles` (array). (synchronous)
 
 ##### `superlogin.confirmAllRoles(requiredRoles)`
-Returns true if the user possesses ALL of the specified `requiredRoles` (array).
+Returns true if the user possesses ALL of the specified `requiredRoles` (array). (synchronous)
 
 ##### `superlogin.refresh()`
 Makes an HTTP call to refresh the access token.
@@ -140,10 +140,16 @@ Logs out ALL the user's open sessions and returns a promise. Deletes the session
 Logs out all the user's open sessions EXCEPT the current one. Returns a promise.
 
 ##### `superlogin.socialAuth(provider)`
-Opens a popup window to authenticate the specified provider. Returns a promise that is rejected if authentication fails, or the popup is closed prematurely. Also rejects if the provider has not present in the `providers` list in the config.
+Opens a popup window to authenticate the specified provider. Returns a promise that is rejected if authentication fails, or the popup is closed prematurely. Also rejects if the provider is not present in the `providers` list in the config.
+
+##### `superlogin.tokenSocialAuth(provider, accessToken)`
+Login using an access_token obtained by the client for the specified provider. This is useful for PhoneGap and native plugins. Rejects if the provider is not present in the `providers` list in the config.
 
 ##### `superlogin.link(provider)`
 Opens a popup window to link provider to the already authenticated user. Returns a promise that will reject if the user is not authenticated, the popup is closed prematurely, or the link fails.
+
+##### `superlogin.tokenLink(provider, accessToken)`
+Link a provider using an access_token obtained by the client. Returns a promise.
 
 ##### `superlogin.unlink(provider)`
 Unlinks the specified provider from the user's account. Returns a promise.
