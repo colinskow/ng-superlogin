@@ -185,6 +185,7 @@ angular.module('superlogin', [])
       $window.superlogin = {};
       $window.superlogin.oauthSession = function(error, session, link) {
         if(!error && session) {
+          session.serverTimeDiff = session.issued - slDateNow();
           superloginSession.setSession(session);
           $rootScope.$broadcast('sl:login', session);
           oauthDeferred.resolve(session);
@@ -253,6 +254,7 @@ angular.module('superlogin', [])
           return $http(req)
             .then(function(res) {
               if(res.data.user_id && res.data.token) {
+                res.data.serverTimeDiff = res.data.issued - slDateNow();
                 superloginSession.setSession(res.data);
                 $rootScope.$broadcast('sl:login', res.data);
               }
@@ -308,6 +310,7 @@ angular.module('superlogin', [])
           return $http.post(superloginSession.getConfig().baseUrl + provider + '/token', {access_token: accessToken})
             .then(function(res) {
               if(res.data.user_id && res.data.token) {
+                res.data.serverTimeDiff = res.data.issued - slDateNow();
                 superloginSession.setSession(res.data);
                 $rootScope.$broadcast('sl:login', res.data);
               }

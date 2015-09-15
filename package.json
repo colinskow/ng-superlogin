@@ -1,6 +1,6 @@
 {
   "name": "ng-superlogin",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Angular bindings for the SuperLogin project",
   "scripts": {
     "test": "gulp test"
