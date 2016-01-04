@@ -103,7 +103,7 @@ Returns the current session if the user is authenticated. (synchronous)
 ##### `superlogin.deleteSession()`
 Deletes the current session, but does not invalidate the token on the server or broadcast a logout event. (synchronous)
 
-##### `superlogin.getDBUrl(dbName)`
+##### `superlogin.getDbUrl(dbName)`
 Returns the access url for the specified user database, or null if it is not found. (synchronous)
 
 ##### `superlogin.confirmRole(role)`
