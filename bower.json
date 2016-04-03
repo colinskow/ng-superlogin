@@ -19,9 +19,9 @@
     "authentication"
   ],
   "dependencies": {
-    "angular": "^1.4.x"
+    "angular": "^1.5.x"
   },
   "devDependencies": {
-    "angular-mocks": "^1.4.x"
+    "angular-mocks": "^1.5.x"
   }
 }

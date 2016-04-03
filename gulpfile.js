@@ -1,6 +1,6 @@
 var fs = require('fs');
 var gulp = require('gulp');
-var karma = require('karma').server;
+var KarmaServer = require('karma').Server;
 var jshint = require('gulp-jshint');
 var header = require('gulp-header');
 var footer = require('gulp-footer');
@@ -24,10 +24,10 @@ gulp.task('lint', function() {
 });
 
 gulp.task('test', ['lint'], function (done) {
-  karma.start({
+  new KarmaServer({
     configFile: __dirname + '/karma.conf.js',
     singleRun: true
-  }, done);
+  }, done).start();
 });
 
 gulp.task('clean:dist', ['test'], function () {
