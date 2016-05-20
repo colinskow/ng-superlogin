@@ -419,7 +419,7 @@ angular.module('superlogin', [])
               if(err.status === 409) {
                 return $q.reject(false);
               }
-              return $q.reject(err.data);
+              return $q.reject(err);
             });
         },
         validateEmail: function(email) {
@@ -430,7 +430,7 @@ angular.module('superlogin', [])
               if(err.status === 409) {
                 return $q.reject(false);
               }
-              return $q.reject(err.data);
+              return $q.reject(err);
             });
         }
       };
