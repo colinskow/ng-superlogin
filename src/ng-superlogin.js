@@ -10,19 +10,19 @@ angular.module('superlogin', [])
     };
   })
 
-  .provider('superloginSession', ["$windowProvider", function($windowProvider) {
+  .provider('superloginSession', function($windowProvider) {
     var $window = $windowProvider.$get();
     var _config, _session, _refreshCB, _refreshInProgress;
     var self = this;
 
     this.configure = function(config) {
       config = config || {};
-      config.baseUrl = config.baseUrl || '/auth/';      
+      config.baseUrl = config.baseUrl || '/auth/';     
       config.providers = config.providers || [];
       _config = config;
     };
 
-    this.$get = ["$window", "$rootScope", "slDateNow", function($window, $rootScope, slDateNow) {
+    this.$get = function($window, $rootScope, slDateNow) {
       // Apply defaults if there is no config
       if(!_config) {
         self.configure({});
@@ -158,15 +158,15 @@ angular.module('superlogin', [])
           _refreshCB = cb;
         }
       };
-    }];
+    };
 
-  }])
+  })
 
-  .provider('superlogin', ["superloginSessionProvider", function(superloginSessionProvider) {
+  .provider('superlogin', function(superloginSessionProvider) {
 
     this.configure = superloginSessionProvider.configure;
 
-    this.$get = ["slApi", "$q", "$window", "$interval", "$rootScope", "superloginSession", "slDateNow", function(slApi, $q, $window, $interval, $rootScope, superloginSession, slDateNow) {
+    this.$get = function(slApi, $q, $window, $interval, $rootScope, superloginSession, slDateNow) {
 
       var oauthDeferred, oauthComplete;
 
@@ -285,7 +285,7 @@ angular.module('superlogin', [])
           if(providers.indexOf(provider) === -1) {
             return $q.reject({error: 'Provider ' + provider + ' not supported.'});
           }
-          return slApi(provider + '/token', {access_token: accessToken})
+          return slApi.post(provider + '/token', {access_token: accessToken})
             .then(function(res) {
               if(res.data.user_id && res.data.token) {
                 res.data.serverTimeDiff = res.data.issued - slDateNow();
@@ -397,7 +397,7 @@ angular.module('superlogin', [])
               if(err.status === 409) {
                 return $q.reject(false);
               }
-              return $q.reject(err.data);
+              return $q.reject(err);
             });
         },
         validateEmail: function(email) {
@@ -408,7 +408,7 @@ angular.module('superlogin', [])
               if(err.status === 409) {
                 return $q.reject(false);
               }
-              return $q.reject(err.data);
+              return $q.reject(err);
             });
         }
       };
@@ -452,11 +452,11 @@ angular.module('superlogin', [])
         return string.charAt(0).toUpperCase() + string.slice(1);
       }
 
-    }];
+    };
 
-  }])
+  })
   
-  .factory('slApi', ["$rootScope", "$q", "$window", "superloginSession", "$http", function($rootScope, $q, $window, superloginSession, $http) {
+   .factory('slApi', function($rootScope, $q, $window, superloginSession, $http) {
     var service = {
       post: post,
       get: get
@@ -489,7 +489,7 @@ angular.module('superlogin', [])
     }
 
     function responseError(response) {
-      // If there is an unauthorized error from one of our endpoints and we are logged in...
+      // If there is an unauthorized error and we are logged in...
       if (response.status === 401 && superloginSession.authenticated()) {
         superloginSession.deleteSession();
         $rootScope.$broadcast('sl:logout', 'Session expired');
@@ -497,5 +497,6 @@ angular.module('superlogin', [])
       return $q.reject(response);
     }
    
-  }]);
+  });
 
+ 
