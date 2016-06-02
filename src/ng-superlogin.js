@@ -1,12 +1,6 @@
-/**
- * @license ng-superlogin v0.2.2
- * (c) 2015 Colin Skow
- * License: MIT
- */
-(function(angular) {
 'use strict';
 /* global angular */
-/* jshint -W097 */
+/* jshint -W097, -W109, -W106, -W116, -W101*/
 
 angular.module('superlogin', [])
 
@@ -23,15 +17,7 @@ angular.module('superlogin', [])
 
     this.configure = function(config) {
       config = config || {};
-      config.baseUrl = config.baseUrl || '/auth/';
-      if(!config.endpoints || !(config.endpoints instanceof Array)) {
-        config.endpoints = [];
-      }
-      if(!config.noDefaultEndpoint) {
-        var parser = $window.document.createElement('a');
-        parser.href = '/';
-        config.endpoints.push(parser.host);
-      }
+      config.baseUrl = config.baseUrl || '/auth/';      
       config.providers = config.providers || [];
       _config = config;
     };
@@ -513,4 +499,3 @@ angular.module('superlogin', [])
    
   }]);
 
-})(angular);
