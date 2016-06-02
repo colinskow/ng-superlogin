@@ -1,12 +1,8 @@
 'use strict';
 /* global angular */
-/* jshint -W097 */
+/* jshint -W097, -W109, -W106, -W116, -W101*/
 
 angular.module('superlogin', [])
-
-  .config(function($httpProvider) {
-    $httpProvider.interceptors.push('superloginInterceptor');
-  })
 
   .factory('slDateNow', function() {
     return function(){
@@ -21,15 +17,7 @@ angular.module('superlogin', [])
 
     this.configure = function(config) {
       config = config || {};
-      config.baseUrl = config.baseUrl || '/auth/';
-      if(!config.endpoints || !(config.endpoints instanceof Array)) {
-        config.endpoints = [];
-      }
-      if(!config.noDefaultEndpoint) {
-        var parser = $window.document.createElement('a');
-        parser.href = '/';
-        config.endpoints.push(parser.host);
-      }
+      config.baseUrl = config.baseUrl || '/auth/';     
       config.providers = config.providers || [];
       _config = config;
     };
@@ -178,7 +166,7 @@ angular.module('superlogin', [])
 
     this.configure = superloginSessionProvider.configure;
 
-    this.$get = function($http, $q, $window, $interval, $rootScope, superloginSession, slDateNow) {
+    this.$get = function(slApi, $q, $window, $interval, $rootScope, superloginSession, slDateNow) {
 
       var oauthDeferred, oauthComplete;
 
@@ -229,12 +217,7 @@ angular.module('superlogin', [])
           if(!credentials.username || !credentials.password) {
             return $q.reject('Username or Password missing...');
           }
-          var req = {
-            method: 'POST',
-            url: superloginSession.getConfig().baseUrl + 'login',
-            data: credentials
-          };
-          return $http(req)
+          return slApi.post('login', credentials)
             .then(function(res) {
               res.data.serverTimeDiff = res.data.issued - slDateNow();
               superloginSession.setSession(res.data);
@@ -246,12 +229,7 @@ angular.module('superlogin', [])
             });
         },
         register: function(registration) {
-          var req = {
-            method: 'POST',
-            url: superloginSession.getConfig().baseUrl + 'register',
-            data: registration
-          };
-          return $http(req)
+          return slApi.post('register', registration)
             .then(function(res) {
               if(res.data.user_id && res.data.token) {
                 res.data.serverTimeDiff = res.data.issued - slDateNow();
@@ -264,7 +242,7 @@ angular.module('superlogin', [])
             });
         },
         logout: function(msg) {
-          return $http.post(superloginSession.getConfig().baseUrl + 'logout', {})
+          return slApi.post('logout', {})
             .then(function(res) {
               superloginSession.deleteSession();
               $rootScope.$broadcast('sl:logout', msg || 'Logged out');
@@ -276,7 +254,7 @@ angular.module('superlogin', [])
             });
         },
         logoutAll: function(msg) {
-          return $http.post(superloginSession.getConfig().baseUrl + 'logout-all', {})
+          return slApi.post('logout-all', {})
             .then(function(res) {
               superloginSession.deleteSession();
               $rootScope.$broadcast('sl:logout', msg || 'Logged out');
@@ -288,7 +266,7 @@ angular.module('superlogin', [])
             });
         },
         logoutOthers: function() {
-          return $http.post(superloginSession.getConfig().baseUrl + 'logout-others', {})
+          return slApi.post('logout-others', {})
             .then(function(res) {
               return $q.when(res.data);
             }, function(err) {
@@ -307,7 +285,7 @@ angular.module('superlogin', [])
           if(providers.indexOf(provider) === -1) {
             return $q.reject({error: 'Provider ' + provider + ' not supported.'});
           }
-          return $http.post(superloginSession.getConfig().baseUrl + provider + '/token', {access_token: accessToken})
+          return slApi.post(provider + '/token', {access_token: accessToken})
             .then(function(res) {
               if(res.data.user_id && res.data.token) {
                 res.data.serverTimeDiff = res.data.issued - slDateNow();
@@ -324,7 +302,7 @@ angular.module('superlogin', [])
           if(providers.indexOf(provider) === -1) {
             return $q.reject({error: 'Provider ' + provider + ' not supported.'});
           }
-          return $http.post(superloginSession.getConfig().baseUrl + 'link/' + provider + '/token', {access_token: accessToken})
+          return slApi.post('link/' + provider + '/token', {access_token: accessToken})
             .then(function(res) {
               return $q.when(res.data);
             }, function(err) {
@@ -349,7 +327,7 @@ angular.module('superlogin', [])
             return $q.reject({error: 'Provider ' + provider + ' not supported.'});
           }
           if(superloginSession.authenticated()) {
-            return $http.post(superloginSession.getConfig().baseUrl + 'unlink/' + provider)
+            return slApi.post('unlink/' + provider)
               .then(function(res) {
                 return $q.when(res.data);
               }, function(err) {
@@ -362,7 +340,7 @@ angular.module('superlogin', [])
           if(!token || typeof token !== 'string') {
             return $q.reject({error: 'Invalid token'});
           }
-          return $http.get(superloginSession.getConfig().baseUrl + 'verify-email/' + token)
+          return slApi.get('verify-email/' + token)
             .then(function(res) {
               return $q.when(res.data);
             }, function(err) {
@@ -370,7 +348,7 @@ angular.module('superlogin', [])
             });
         },
         forgotPassword: function(email) {
-          return $http.post(superloginSession.getConfig().baseUrl + 'forgot-password', {email: email})
+          return slApi.post('forgot-password', {email: email})
             .then(function(res) {
               return $q.when(res.data);
             }, function(err) {
@@ -378,7 +356,7 @@ angular.module('superlogin', [])
             });
         },
         resetPassword: function(form) {
-          return $http.post(superloginSession.getConfig().baseUrl + 'password-reset', form)
+          return slApi.post('password-reset', form)
             .then(function(res) {
               if(res.data.user_id && res.data.token) {
                 superloginSession.setSession(res.data);
@@ -391,7 +369,7 @@ angular.module('superlogin', [])
         },
         changePassword: function(form) {
           if(superloginSession.authenticated()) {
-            return $http.post(superloginSession.getConfig().baseUrl + 'password-change', form)
+            return slApi.post('password-change', form)
               .then(function (res) {
                 return $q.when(res.data);
               }, function (err) {
@@ -402,7 +380,7 @@ angular.module('superlogin', [])
         },
         changeEmail: function(newEmail) {
           if(superloginSession.authenticated()) {
-            return $http.post(superloginSession.getConfig().baseUrl + 'change-email', {newEmail: newEmail})
+            return slApi.post('change-email', {newEmail: newEmail})
               .then(function (res) {
                 return $q.when(res.data);
               }, function (err) {
@@ -412,7 +390,7 @@ angular.module('superlogin', [])
           return $q.reject({error: 'Authentication required'});
         },
         validateUsername: function(username) {
-          return $http.get(superloginSession.getConfig().baseUrl + 'validate-username/' + encodeURIComponent(username))
+          return slApi.get('validate-username/' + encodeURIComponent(username))
             .then(function() {
               return $q.when(true);
             }, function(err) {
@@ -423,7 +401,7 @@ angular.module('superlogin', [])
             });
         },
         validateEmail: function(email) {
-          return $http.get(superloginSession.getConfig().baseUrl + 'validate-email/' + encodeURIComponent(email))
+          return slApi.get('validate-email/' + encodeURIComponent(email))
             .then(function () {
               return $q.when(true);
             }, function (err) {
@@ -437,7 +415,7 @@ angular.module('superlogin', [])
 
       function refresh() {
         var session = superloginSession.getSession();
-        return $http.post(superloginSession.getConfig().baseUrl + 'refresh', {})
+        return slApi.post('refresh', {})
           .then(function(res) {
             if(res.data.token && res.data.expires) {
               session.expires = res.data.expires;
@@ -477,43 +455,48 @@ angular.module('superlogin', [])
     };
 
   })
+  
+   .factory('slApi', function($rootScope, $q, $window, superloginSession, $http) {
+    var service = {
+      post: post,
+      get: get
+    };
+    var sessionConfig = superloginSession.getConfig();
+    var baseUrl = sessionConfig.baseUrl;
+    
+    return service;
+    
+    function post(path, data, options){      
+     var config = addAuthorization(options); 
+     return $http.post(baseUrl + path, data, config).catch(responseError); 
+    }
+    
+    function get(path, options){
+      var config = addAuthorization(options);
+      return $http.get(baseUrl + path, config).catch(responseError); 
+    }   
 
-  .service('superloginInterceptor', function($rootScope, $q, $window, $location, superloginSession) {
-    var service = this;
-    var parser = $window.document.createElement('a');
-    var config = superloginSession.getConfig();
-    var endpoints = config.endpoints;
-
-    service.request = function(request) {
+    function addAuthorization(config) {
+      var req = config || {};
+      req.headers = req.headers || {};      
+      
       var session = superloginSession.getSession();
       if(session && session.token) {
         superloginSession.checkRefresh();
-      }
-      if(checkEndpoint(request.url, endpoints)) {
-        if(session && session.token) {
-          request.headers.Authorization = 'Bearer ' + session.token + ':' + session.password;
-        }
-      }
-      return request;
-    };
+        req.headers.Authorization = 'Bearer ' + session.token + ':' + session.password;
+      }      
+      return req;
+    }
 
-    service.responseError = function(response) {
-      // If there is an unauthorized error from one of our endpoints and we are logged in...
-      if (checkEndpoint(response.config.url, endpoints) && response.status === 401 && superloginSession.authenticated()) {
+    function responseError(response) {
+      // If there is an unauthorized error and we are logged in...
+      if (response.status === 401 && superloginSession.authenticated()) {
         superloginSession.deleteSession();
         $rootScope.$broadcast('sl:logout', 'Session expired');
       }
       return $q.reject(response);
-    };
-
-    function checkEndpoint(url, endpoints) {
-      parser.href = url;
-      for(var i=0; i<endpoints.length; i++) {
-        if(parser.host === endpoints[i]) {
-          return true;
-        }
-      }
-      return false;
     }
-
+   
   });
+
+ 
