@@ -4,9 +4,9 @@
 
 angular.module('superlogin', [])
 
-  .config(function($httpProvider) {
+  .config(['$httpProvider', function($httpProvider) {
     $httpProvider.interceptors.push('superloginInterceptor');
-  })
+  }])
 
   .factory('slDateNow', function() {
     return function(){
@@ -14,7 +14,7 @@ angular.module('superlogin', [])
     };
   })
 
-  .provider('superloginSession', function($windowProvider) {
+  .provider('superloginSession', ['$windowProvider', function($windowProvider) {
     var $window = $windowProvider.$get();
     var _config, _session, _refreshCB, _refreshInProgress;
     var self = this;
@@ -34,7 +34,7 @@ angular.module('superlogin', [])
       _config = config;
     };
 
-    this.$get = function($window, $rootScope, slDateNow) {
+    this.$get = ['$window', '$rootScope', 'slDateNow', function($window, $rootScope, slDateNow) {
       // Apply defaults if there is no config
       if(!_config) {
         self.configure({});
@@ -170,15 +170,15 @@ angular.module('superlogin', [])
           _refreshCB = cb;
         }
       };
-    };
+    }];
 
-  })
+  }])
 
-  .provider('superlogin', function(superloginSessionProvider) {
+  .provider('superlogin', ['superloginSessionProvider', function(superloginSessionProvider) {
 
     this.configure = superloginSessionProvider.configure;
 
-    this.$get = function($http, $q, $window, $interval, $rootScope, superloginSession, slDateNow) {
+    this.$get = ['$http', '$q', '$window', '$interval', '$rootScope', 'superloginSession', 'slDateNow' ,function($http, $q, $window, $interval, $rootScope, superloginSession, slDateNow) {
 
       var oauthDeferred, oauthComplete;
 
@@ -213,7 +213,7 @@ angular.module('superlogin', [])
         refresh: refresh,
         checkRefresh: superloginSession.checkRefresh,
         checkExpired: superloginSession.checkExpired,
-        authenticate: function() {
+        authenticate: function($q) {
           var deferred = $q.defer();
           var session = superloginSession.getSession();
           if(session) {
@@ -474,11 +474,11 @@ angular.module('superlogin', [])
         return string.charAt(0).toUpperCase() + string.slice(1);
       }
 
-    };
+    }];
 
-  })
+  }])
 
-  .service('superloginInterceptor', function($rootScope, $q, $window, $location, superloginSession) {
+  .service('superloginInterceptor', ['$rootScope', '$q', '$window', '$location', 'superloginSession', function($rootScope, $q, $window, $location, superloginSession) {
     var service = this;
     var parser = $window.document.createElement('a');
     var config = superloginSession.getConfig();
@@ -516,4 +516,4 @@ angular.module('superlogin', [])
       return false;
     }
 
-  });
+  }]);
